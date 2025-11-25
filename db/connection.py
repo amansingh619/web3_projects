@@ -1,28 +1,17 @@
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+# db/connection.py
+
+import psycopg2
 import os
 from dotenv import load_dotenv
 
 load_dotenv()
 
 DATABASE_URL = os.getenv("DATABASE_URL")
-engine = create_engine(
-    DATABASE_URL,
-    pool_pre_ping=True,
-    pool_size=5,
-    max_overflow=10
-)
-
-SessionLocal = sessionmaker(
-    autocommit=False,
-    autoflush=False,
-    bind=engine
-)
 
 def get_conn():
-    """Return a SQLAlchemy session instead of psycopg2 raw connection."""
-    return SessionLocal()
+    """Return raw psycopg2 connection for fast bulk inserts."""
+    return psycopg2.connect(DATABASE_URL)
 
 def release_conn(conn):
-    """Close the SQLAlchemy session."""
+    """Close psycopg2 connection."""
     conn.close()
