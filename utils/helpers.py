@@ -1,5 +1,6 @@
 import os
 import json
+from hexbytes import HexBytes
 from web3 import Web3
 from utils.logger import logger
 from web3.datastructures import AttributeDict
@@ -88,6 +89,7 @@ def connect_to_rpc():
         raise ConnectionError("Unable to connect to Ethereum mainnet")
     return w3
 
+
 def safe_json(row):
     """Convert row (list) → JSON-safe tuple for DB insertion."""
     new_r = []
@@ -99,6 +101,7 @@ def safe_json(row):
         else:
             new_r.append(col)
     return tuple(new_r)
+
 
 def normalize(value):
     """Recursively convert Web3 objects → JSON-serializable."""

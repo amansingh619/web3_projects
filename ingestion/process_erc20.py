@@ -1,4 +1,4 @@
-from utils.decode import decode_transfer_log
+from web3_projects.decoder.decode import decode_transfer_log
 from ingestion.save_data import save_token_transfer
 from ingestion.save_data import get_or_create_token
 from utils.logger import logger

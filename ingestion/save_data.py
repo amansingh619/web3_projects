@@ -4,7 +4,7 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) # root directory
 from utils.logger import logger
 from db.connection import get_conn, release_conn
-from utils.decode import decode_erc20_metadata
+from web3_projects.decoder.decode import decode_erc20_metadata
 
 
 

@@ -1,6 +1,4 @@
 import time
-import json
-from hexbytes import HexBytes
 import datetime
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from utils.helpers import connect_to_rpc
@@ -144,8 +142,8 @@ if __name__ == "__main__":
     else:
         # by default the ingestion module will work on the basis
         # of input start & end block
-        START_BLOCK = 23700831
-        END_BLOCK = 23700860
+        START_BLOCK = 23700851
+        END_BLOCK = 23700900
         logger.info("Block to process: %s to %s", START_BLOCK, END_BLOCK)
 
     initial_time = time.time()
