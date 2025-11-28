@@ -10,10 +10,9 @@ from db.db_operations import Database_Operations
 db_inst = Database_Operations()
 w3 = connect_to_rpc()    # creating an connection with RPC
 
-# -----------------------------------------
-# 2. Binary search block by timestamp
-# -----------------------------------------
+
 def find_block_for_timestamp(w3, target_ts):
+    """function to block number for the targetted timestamp"""
     low = 0
     high = w3.eth.block_number
     chosen = None
@@ -31,13 +30,6 @@ def find_block_for_timestamp(w3, target_ts):
     return chosen
 
 
-
-
-
-
-# -----------------------------------------
-# 4. Fetch a single block (full raw ingestion)
-# -----------------------------------------
 def get_block_data(block_number):
     """Fucntion to get raw block data 
 
@@ -83,9 +75,6 @@ def get_block_data(block_number):
         return {}
 
 
-# -----------------------------------------
-# 5. Worker Batch Processor
-# -----------------------------------------
 def process_batch(start_block, end_block):
     """Function to fetch & insert the data for given block range
 
@@ -119,14 +108,13 @@ def process_batch(start_block, end_block):
         return False
 
 
-if __name__ == "__main__":
-    DATE = None
-    BATCH_SIZE = 20     # TODO: batch size for bulk insertion can be increased
-    MAX_WORKERS = 1     # TODO: we can increas in future
-    START_BLOCK, END_BLOCK = None, None
-    
-    if DATE:
-        logger.info("Starting raw block ingestion for %s", DATE)
+def get_block_number_for_date(date):
+    """
+        Function to generate start & 
+        and block number based on date value
+    """
+    try:
+        logger.info("Starting raw block ingestion for %s", date)
         # 2025-11-01 to 2025-11-02 (UTC)
         start_date = datetime.datetime(2025, 11, 1, 0, 0, 0, tzinfo=datetime.timezone.utc)
         end_date = datetime.datetime(2025, 11, 2, 0, 0, 0, tzinfo=datetime.timezone.utc)
@@ -134,17 +122,31 @@ if __name__ == "__main__":
         end_ts = int(end_date.timestamp())
         
         logger.info("Finding start block…")
-        START_BLOCK = find_block_for_timestamp(w3, start_ts)
+        start_block = find_block_for_timestamp(w3, start_ts)
 
         logger.info("Finding end block…")
-        END_BLOCK = find_block_for_timestamp(w3, end_ts)
+        end_block = find_block_for_timestamp(w3, end_ts)
 
-        logger.info("Block range to process for %s : %s to %s", DATE, START_BLOCK, END_BLOCK)
+        logger.info("Block to process for %s : %s to %s", date, start_block,end_block)
+        return start_block, end_block
+    except Exception  as e:
+        logger.error("Error occured for date to block functions -> %s",e)
+        return None, None
+    
+
+if __name__ == "__main__":
+    DATE = None
+    BATCH_SIZE = 20     # TODO: batch size for bulk insertion can be increased
+    MAX_WORKERS = 1     # TODO: we can increas in future
+    START_BLOCK, END_BLOCK = None, None
+    if DATE:
+        START_BLOCK, END_BLOCK = get_block_number_for_date(date=DATE)
     else:
-        # by default the ingestion module will work o the basis of input start & end block
-        START_BLOCK = 23700801
-        END_BLOCK = 23700830
-        logger.info("Block range to process: %s to %s", START_BLOCK, END_BLOCK)
+        # by default the ingestion module will work on the basis
+        # of input start & end block
+        START_BLOCK = 23700831
+        END_BLOCK = 23700860
+        logger.info("Block to process: %s to %s", START_BLOCK, END_BLOCK)
 
     initial_time = time.time()
     with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
