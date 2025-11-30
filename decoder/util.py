@@ -5,17 +5,17 @@ from web3 import Web3
 
 ERC20_TRANSFER_TOPIC = Web3.keccak(text="Transfer(address,address,uint256)").hex().lower()
 
-def normalize_value(v):
+def normalize_value(value):
     """Recursively normalize Web3 types to JSON-serializable."""
-    if isinstance(v, HexBytes):
-        return v.hex()
-    if isinstance(v, bytes):
-        return v.hex()
-    if isinstance(v, dict):
-        return {k: normalize_value(val) for k, val in v.items()}
-    if isinstance(v, list):
-        return [normalize_value(x) for x in v]
-    return v
+    if isinstance(value, HexBytes):
+        return value.hex()
+    if isinstance(value, bytes):
+        return value.hex()
+    if isinstance(value, dict):
+        return {k: normalize_value(val) for k, val in value.items()}
+    if isinstance(value, list):
+        return [normalize_value(x) for x in value]
+    return value
 
 def json_from_raw(raw):
     """Accept raw_json coming from DB (dict or string) and return a dict."""

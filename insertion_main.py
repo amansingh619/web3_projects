@@ -5,7 +5,7 @@ from utils.helpers import connect_to_rpc
 from utils.logger import logger
 from db.db_operations import Database_Operations
 
-db_inst = Database_Operations()
+db_help = Database_Operations()
 w3 = connect_to_rpc()    # creating an connection with RPC
 
 
@@ -94,10 +94,10 @@ def process_batch(start_block, end_block):
                 all_receipts.extend(data["receipt"])
                 all_logs.extend(data["logs"])
 
-        db_inst.insert_blocks_data(all_blocks)
-        db_inst.insert_txs_data(all_txs)
-        db_inst.insert_receipts_data(all_receipts)
-        db_inst.insert_logs_data(all_logs)
+        db_help.insert_blocks_data(all_blocks)
+        db_help.insert_txs_data(all_txs)
+        db_help.insert_receipts_data(all_receipts)
+        db_help.insert_logs_data(all_logs)
 
         logger.info("Data for %s → %s stored in DB!!", start_block, end_block)
         return True
@@ -143,7 +143,7 @@ if __name__ == "__main__":
         # by default the ingestion module will work on the basis
         # of input start & end block
         START_BLOCK = 23700851
-        END_BLOCK = 23700900
+        END_BLOCK = 23700870
         logger.info("Block to process: %s to %s", START_BLOCK, END_BLOCK)
 
     initial_time = time.time()
